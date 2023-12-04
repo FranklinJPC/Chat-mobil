@@ -10,14 +10,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./chat.page.scss'],
 })
 export class ChatPage implements OnInit {
-  @ViewChild(IonContent, { static: true }) content!: IonContent;
+  @ViewChild(IonContent) content: IonContent | undefined;
 
-  messages: Observable<any[]>;
+  messages: Observable<any[]> | undefined;
   newMsg = '';
 
-  constructor(private chatService: ChatService, private router: Router) {
-    this.messages = this.chatService.getChatMessages();
-  }
+  constructor(private chatService: ChatService, private router: Router) { }
 
   ngOnInit() {
     this.messages = this.chatService.getChatMessages();
@@ -26,7 +24,9 @@ export class ChatPage implements OnInit {
   sendMessage() {
     this.chatService.addChatMessage(this.newMsg).then(() => {
       this.newMsg = '';
-      this.content.scrollToBottom();
+      if (this.content) {
+        this.content.scrollToBottom();
+      }
     });
   }
 
